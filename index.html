@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Calculate carbohydrate needs for cycling and get gel flask recipes"
+    />
+    <meta name="theme-color" content="#f97316" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.svg" />
+    <title>Velonutri</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div id="step-1" class="step">
+        <div class="header">
+          <div class="step-number">Step 1 of 2</div>
+          <h1>How long will you ride?</h1>
+        </div>
+
+        <div class="card">
+          <div class="hour-selector">
+            <div class="hour-display">
+              <span id="ride-hours-display">2</span><span class="unit">h</span>
+            </div>
+            <div class="hour-buttons">
+              <div class="hour-row">
+                <button type="button" class="hour-btn minus" data-amount="1">
+                  -1h
+                </button>
+                <button type="button" class="hour-btn minus" data-amount="0.5">
+                  -30min
+                </button>
+                <button type="button" class="hour-btn minus" data-amount="0.25">
+                  -15min
+                </button>
+              </div>
+              <div class="hour-row">
+                <button type="button" class="hour-btn plus" data-amount="0.25">
+                  +15min
+                </button>
+                <button type="button" class="hour-btn plus" data-amount="0.5">
+                  +30min
+                </button>
+                <button type="button" class="hour-btn plus" data-amount="1">
+                  +1h
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="goToStep2()">
+          Continue
+        </button>
+      </div>
+
+      <div id="step-2" class="step">
+        <div class="header">
+          <div class="step-number">Step 2 of 2</div>
+          <h1>How hard will you ride?</h1>
+        </div>
+
+        <div class="card">
+          <div class="options">
+            <button type="button" class="option-btn" data-intensity="easy">
+              <span class="label">Easy / Recovery</span>
+              <span class="sublabel" id="easy-carbs-label"
+                >~65g carbs/hour</span
+              >
+            </button>
+
+            <button type="button" class="option-btn" data-intensity="hard">
+              <span class="label">Hard / Race Effort</span>
+              <span class="sublabel" id="hard-carbs-label"
+                >~100g carbs/hour</span
+              >
+            </button>
+
+            <button type="button" class="option-btn" data-intensity="custom">
+              <span class="label">Custom</span>
+              <span class="sublabel">Enter your own rate</span>
+            </button>
+          </div>
+
+          <div id="custom-carb-rate" class="custom-input" style="display: none">
+            <div class="input-group">
+              <label for="custom-carbs">Carbs per hour (g)</label>
+              <input
+                type="number"
+                id="custom-carb-rate-input"
+                min="1"
+                placeholder="e.g. 80"
+                inputmode="numeric"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary back-btn">Back</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            disabled
+            onclick="goToStep3()"
+          >
+            Calculate
+          </button>
+        </div>
+      </div>
+
+      <div id="step-3" class="step">
+        <div class="header">
+          <div class="step-number">Your results</div>
+          <h1>Carbs needed</h1>
+        </div>
+
+        <div class="card result-card">
+          <div class="result-value">
+            <span id="total-carbs">0</span><span class="result-unit">g</span>
+          </div>
+          <p class="result-label">
+            For <span id="hours-ride">0</span>h at
+            <span id="carbs-per-hour">0</span>g/hour
+          </p>
+
+          <div class="recipe">
+            <h3>Gel Flask Recipe</h3>
+            <div id="recipe-ingredients" class="recipe-ingredients"></div>
+
+            <div id="recipe-steps" class="recipe-steps"></div>
+
+            <p id="recipe-note" class="recipe-note"></p>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary back-btn">Back</button>
+          <button type="button" class="btn btn-primary" id="start-over">
+            Start Over
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button id="settings-btn" class="settings-btn" title="Settings">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+    </button>
+
+    <div id="settings-overlay" class="settings-overlay">
+      <div class="settings-panel">
+        <div class="settings-header">
+          <h2>Settings</h2>
+          <button type="button" id="settings-close" class="settings-close">
+            &times;
+          </button>
+        </div>
+
+        <div class="settings-section">
+          <h3>Carb Rates (g/hour)</h3>
+          <div class="settings-row">
+            <span class="label">Easy ride</span>
+            <div>
+              <input type="number" id="easy-carbs" min="10" max="150" />
+              <label class="label">(g/hour)</label>
+            </div>
+          </div>
+          <div class="settings-row">
+            <span class="label">Hard ride</span>
+            <div>
+              <input type="number" id="hard-carbs" min="10" max="150" />
+              <label class="label">(g/hour)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Recipe</h3>
+          <div class="slider-option">
+            <div class="slider-header">
+              <span class="label">Gel concentration (carbs)</span>
+              <span class="value" id="sugar-concentration-value">70%</span>
+            </div>
+            <input
+              type="range"
+              id="concentration-slider"
+              min="50"
+              max="80"
+              value="70"
+            />
+            <div class="slider-header" style="margin-top: 8px">
+              <span class="label">Water</span>
+              <span class="value" id="water-concentration-value">30%</span>
+            </div>
+          </div>
+
+          <div class="toggle-option" style="margin-top: 16px">
+            <span class="label">Use maltodextrin-fructose mix in recipes</span>
+            <label class="toggle">
+              <input type="checkbox" id="fructose-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div
+            id="malto-fructose-ratio-section"
+            class="slider-option"
+            style="display: none"
+          >
+            <div class="slider-header">
+              <span class="label">Maltodextrin</span>
+              <span class="value" id="malto-ratio">50%</span>
+            </div>
+            <input
+              type="range"
+              id="malto-fructose-ratio-slider"
+              min="50"
+              max="70"
+              value="50"
+            />
+            <div class="slider-header" style="margin-top: 8px">
+              <span class="label">Fructose</span>
+              <span class="value" id="fructose-ratio">50%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

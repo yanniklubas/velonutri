@@ -1,0 +1,17 @@
+{
+  "name": "Velonutri",
+  "short_name": "Velonutri",
+  "description": "Calculate carbohydrate needs for cycling and get gel flask recipes",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f97316",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "./apple-touch-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
